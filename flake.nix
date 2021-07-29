@@ -1,12 +1,14 @@
 {
-  inputs = { nixpkgs.url = "github:nixos/nixpkgs"; };
+  inputs = { nixpkgs.url = "github:nixos/nixpkgs";
+             flake-utils.url = "github:numtide/flake-utils";
+           };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
     let
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs = nixpkgs.legacyPackages.${system};
       jre = pkgs.openjdk11;
-    in {
-      packages.x86_64-linux.neo4j = (pkgs.stdenv.mkDerivation rec {
+      neo4j = (pkgs.stdenv.mkDerivation rec {
         pname = "neo4j";
         version = "4.3.2";
 
@@ -62,6 +64,8 @@
           platforms = pkgs.lib.platforms.unix;
         };
       });
-      defaultPackage.x86_64-linux = self.packages.x86_64-linux.neo4j;
-    };
+    in {
+      packages.neo4j = neo4j;
+      defaultPackage = self.packages.${system}.neo4j;
+    });
 }
