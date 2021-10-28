@@ -7,7 +7,7 @@
     flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
-      jre = pkgs.openjdk11;
+      jre = pkgs.openjdk11_headless;
       neo4j = (pkgs.stdenv.mkDerivation rec {
         pname = "neo4j";
         version = "4.3.2";
