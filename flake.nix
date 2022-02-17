@@ -11,13 +11,12 @@
         jre = pkgs.openjdk11_headless;
         neo4j = (pkgs.stdenv.mkDerivation rec {
           pname = "neo4j";
-          version = "4.3.2";
+          version = "4.4.4";
 
           src = pkgs.fetchurl {
             url =
               "https://neo4j.com/artifact.php?name=neo4j-community-${version}-unix.tar.gz";
-            sha256 =
-              "3474f3ec9da57fb627af71652ae6ecbd036e6ea689379f09e77e4cd8ba4b5515";
+            sha256 = "1gpjxwl8gl0lb6a6k4zwwpzqfvaxaq36d99g6m62i1ic2q7i1sj6";
           };
 
           nativeBuildInputs = [ pkgs.makeWrapper pkgs.bashInteractive ];
