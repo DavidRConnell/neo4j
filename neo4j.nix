@@ -1,4 +1,4 @@
-{ pkgs, jre, db-home }:
+{ pkgs, jre }:
 
 pkgs.stdenv.mkDerivation rec {
   pname = "neo4j-community";
@@ -35,12 +35,6 @@ pkgs.stdenv.mkDerivation rec {
                     }:$out/share/neo4j/bin/" \
                     --set JAVA_HOME "${jre}"
             done
-
-            substituteInPlace "$out/share/neo4j/conf/neo4j.conf" \
-              --replace '#dbms.directories.logs=logs' "dbms.directories.logs=${db-home}/logs" \
-              --replace '#dbms.directories.run=run' "dbms.directories.run=${db-home}/run" \
-              --replace '#dbms.directories.data=data' "dbms.directories.data=${db-home}/data" \
-              --replace '#dbms.security.auth_enabled=false' 'dbms.security.auth_enabled=false'
 
             runHook postInstall
           '';

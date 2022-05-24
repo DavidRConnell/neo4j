@@ -12,10 +12,14 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         jre = pkgs.openjdk11_headless;
+        neo4j = pkgs.callPackage ./neo4j.nix { inherit pkgs jre; };
         db-home = "/homeless-shelter";
+        auth-enabled = false;
       in {
-        packages.neo4j =
-          pkgs.callPackage ./neo4j.nix { inherit pkgs jre db-home; };
-        defaultPackage = self.packages.${system}.neo4j;
+        packages.neo4jWrapper = pkgs.callPackage ./wrapper.nix {
+          inherit pkgs neo4j jre db-home auth-enabled;
+          plugins = [ ];
+        };
+        defaultPackage = self.packages.${system}.neo4jWrapper;
       });
 }
