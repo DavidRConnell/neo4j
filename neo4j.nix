@@ -2,13 +2,13 @@
 
 pkgs.stdenv.mkDerivation rec {
   pname = "neo4j-community";
-  version = "4.4.4";
+  version = "4.4.7";
   name = "${pname}-${version}";
 
   src = pkgs.fetchurl {
     url =
       "https://neo4j.com/artifact.php?name=${pname}-${version}-unix.tar.gz";
-    sha256 = "1gpjxwl8gl0lb6a6k4zwwpzqfvaxaq36d99g6m62i1ic2q7i1sj6";
+    sha256 = "0fgk7qzk4jzm47v918wnhqpw0w4k8ih0k1hjhhxn2xavaymd3xdj";
   };
 
   nativeBuildInputs = [ pkgs.makeWrapper pkgs.bashInteractive ];
