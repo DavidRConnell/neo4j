@@ -1,0 +1,46 @@
+#+TITLE: Neo4j flake
+
+Provides neo4j. To use you need to use the provided wrapper and supply a path for the db via overriding ~db-home~ (most have write access), the default path is ~/homeless-shelter~ which will error because it doesn't exist.
+Additionally, ~auth-enabled~ is a boolean that can be overridden to enable or disable authentication (defaults to false).
+
+Plugins will be added to the plugins directory as they are needed. A list of plugins can also be supplied to the wrapper. Plugins are exposed in the flake so any flake depending on this flake can get them. External plugins can also be used.
+
+Example of using in another flake:
+#+begin_src nix
+  {
+    description = "Example of using neo4j";
+
+    inputs = {
+      nixpkgs.url = "github:nixos/nixpkgs";
+      flake-utils = {
+        url = "github:numtide/flake-utils";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+      neo4j = {
+        url = "github:DavidRConnell/neo4j";
+        inputs.nixpkgs.follows = "nixpkgs";
+        inputs.flake-utils.follows = "flake-utils";
+      };
+    };
+
+    outputs = { self, nixpkgs, flake-utils, neo4j }:
+      flake-utils.lib.eachDefaultSystem (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          # Need a way to avoid hardcoding user's home directory.
+          db-home = "/home/user/.local/share/neo4j/example";
+          auth-enabled = false;
+          plugins = [ neo4j.graph-data-science.${system} ];
+          neo4j-wrapper = neo4j.packages.${system}.neo4jWrapper.override {
+            inherit db-home auth-enabled plugins;
+          };
+        in {
+          devShell = pkgs.mkShell {
+            buildInputs = [ neo4j-wrapper ];
+          };
+        });
+  }
+#+end_src
+
+** Creating plugins
+New plugins should be a derivative with their files in ~"$out/share/neo4j/plugins"~ and if they unrestricted access to the database via the ~dbms.security.procedures.unrestricted~ configuration parameter, add give the derivative a ~unrestricted=true~ attribute (see ~./plugins/graph-data-science.nix~ and ~./plugins/unpack.sh~).
