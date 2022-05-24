@@ -20,6 +20,8 @@
           inherit pkgs neo4j jre db-home auth-enabled;
           plugins = [ ];
         };
+        graph-data-science =
+          pkgs.callPackage ./plugins/graph-data-science.nix { inherit pkgs; };
         defaultPackage = self.packages.${system}.neo4jWrapper;
       });
 }
