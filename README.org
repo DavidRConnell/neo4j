@@ -6,7 +6,7 @@ Additionally, ~auth-enabled~ is a boolean that can be overridden to enable or di
 Plugins will be added to the plugins directory as they are needed. A list of plugins can also be supplied to the wrapper. Plugins are exposed in the flake so any flake depending on this flake can get them. External plugins can also be used.
 
 Example of using in another flake:
-#+begin_src nix
+#+begin_src nix :tangle ./example/flake.nix
   {
     description = "Example of using neo4j";
 
