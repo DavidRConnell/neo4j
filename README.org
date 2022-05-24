@@ -30,15 +30,11 @@ Example of using in another flake:
           # Need a way to avoid hardcoding user's home directory.
           db-home = "/home/user/.local/share/neo4j/example";
           auth-enabled = false;
-          plugins = [ neo4j.graph-data-science.${system} ];
-          neo4j-wrapper = neo4j.packages.${system}.neo4jWrapper.override {
+          plugins = (with neo4j.plugins.${system}; [ graph-data-science ]);
+          neo4jEnv = neo4j.packages.${system}.neo4jWrapper.override {
             inherit db-home auth-enabled plugins;
           };
-        in {
-          devShell = pkgs.mkShell {
-            buildInputs = [ neo4j-wrapper ];
-          };
-        });
+        in { devShell = pkgs.mkShell { buildInputs = [ neo4jEnv ]; }; });
   }
 #+end_src
 
