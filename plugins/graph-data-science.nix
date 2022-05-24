@@ -2,7 +2,7 @@
 
 pkgs.stdenv.mkDerivation rec {
   pname = "gds";
-  version = "1.7.2";
+  version = "2.0.4";
   name = "${pname}-${version}";
   unrestricted = true;
 
@@ -12,7 +12,7 @@ pkgs.stdenv.mkDerivation rec {
   unzip = pkgs.unzip;
   src = pkgs.fetchurl {
     url =
-      "https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-1.7.2-standalone.zip";
-    sha256 = "0p02908iii3jrva3p2gvah0c0qny2fyyylrg3qqw50dsj13fvdf5";
+      "https://github.com/neo4j/graph-data-science/releases/download/${version}/neo4j-graph-data-science-${version}.zip";
+    sha256 = "0hm6yllyn629nffmdlz3wby1df6ix19ajb2mwvl84z9jgr2crqlk";
   };
 }
