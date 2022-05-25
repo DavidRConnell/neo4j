@@ -1,11 +1,12 @@
-{ pkgs, neo4j, jre, db-home, auth-enabled, plugins }:
+{ symlinkJoin, lib, makeWrapper, which, gawk, neo4j, jre, db-home, auth-enabled
+, plugins }:
 
-pkgs.symlinkJoin rec {
+symlinkJoin rec {
   name = "${neo4j.name}-wrapper";
   preferLocalBuild = true;
   allowSubstitutes = false;
 
-  buildInputs = [ neo4j ] ++ plugins ++ [ pkgs.makeWrapper ];
+  buildInputs = [ neo4j ] ++ plugins ++ [ makeWrapper ];
   paths = [ neo4j ] ++ plugins;
   setAuthentication = (if auth-enabled then
     ""
@@ -34,7 +35,7 @@ pkgs.symlinkJoin rec {
     makeWrapper "$out"/share/neo4j/bin/neo4j \
     "$out"/bin/neo4j \
     --prefix PATH : "${
-      pkgs.lib.makeBinPath [ jre pkgs.which pkgs.gawk ]
+      lib.makeBinPath [ jre which gawk ]
     }:$out/share/neo4j/bin/" \
     --set JAVA_HOME "${jre}" \
     --set NEO4J_HOME "$out"/share/neo4j
