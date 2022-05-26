@@ -20,6 +20,10 @@
         };
         defaultPackage = self.packages.${system}.neo4jWrapper;
 
-        plugins = import ./plugins { inherit pkgs; };
+        mkPlugin = import ./pluginBuilders { inherit pkgs; };
+        plugins = import ./plugins {
+          inherit pkgs;
+          packagePrebuiltPlugin = self.mkPlugin.${system}.prebuilt;
+        };
       });
 }

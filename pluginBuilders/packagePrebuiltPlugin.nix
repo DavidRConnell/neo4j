@@ -1,4 +1,4 @@
-{ stdenv, unzip, src, pname, version, unrestricted, meta }:
+{ stdenv, unzip, src, pname, version, unrestricted ? false , meta ? null }:
 
 stdenv.mkDerivation rec {
   inherit pname version unrestricted src meta;

@@ -29,8 +29,8 @@ Example of using in another flake:
           pkgs = nixpkgs.legacyPackages.${system};
           # Need a way to avoid hardcoding user's home directory.
           db-home = "/home/user/.local/share/neo4j/example";
-          auth-enabled = false;
-          plugins = (with neo4j.plugins.${system}; [ graph-data-science ]);
+          auth-enabled = false; # The default so could be omitted.
+          plugins = (with neo4j.plugins.${system}; [ gds ]);
           neo4jEnv = neo4j.packages.${system}.neo4jWrapper.override {
             inherit db-home auth-enabled plugins;
           };
@@ -39,4 +39,8 @@ Example of using in another flake:
 #+end_src
 
 ** Creating plugins
-New plugins should be a derivative with their files in ~"$out/share/neo4j/plugins"~ and if they unrestricted access to the database via the ~dbms.security.procedures.unrestricted~ configuration parameter, add give the derivative a ~unrestricted=true~ attribute (see ~./plugins/graph-data-science.nix~ and ~./plugins/unpack.sh~).
+New plugins should be a derivative with their jar files in ~"$out/share/neo4j/plugins"~.
+If you have a prebuilt copy of the plugin (like for ~./plugins/graph-data-science.nix~) you can use the packager ~neo4j.mkPlugin.${system}.prebuilt~ (where ~neo4j~ is the name of this flake as in the example above).
+In the future, I will likely add other packager/builders to build packages from source.
+
+If a plugin needs unrestricted access, set it's ~unrestricted~ attribute to ~true~ (see ~./plugins/graph-data-science.nix~).

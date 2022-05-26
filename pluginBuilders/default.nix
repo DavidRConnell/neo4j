@@ -1,10 +1,10 @@
 { pkgs }:
 
 let
-  stdenv = pkgs.stdenv;
+  stdenv = pkgs.stdenvNoCC;
   unzip = pkgs.unzip;
 in {
-  prebuilt = src: pname: version: unrestricted: meta:
+  prebuilt = { src, pname, version, unrestricted ? false , meta ? null}:
     import ./packagePrebuiltPlugin.nix {
       inherit stdenv unzip src pname version unrestricted meta;
     };

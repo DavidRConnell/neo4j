@@ -1,35 +1,23 @@
-{ stdenv, fetchurl, unzip }:
+{ packagePrebuiltPlugin, fetchurl, lib }:
 
-stdenv.mkDerivation rec {
+packagePrebuiltPlugin rec {
   pname = "gds";
   version = "2.0.4";
   unrestricted = true;
 
-  nativeBuildInputs = [ unzip ];
   src = fetchurl {
-    # Find releases here: https://github.com/neo4j/graph-data-science/releases
-    url =
-      "https://github.com/neo4j/graph-data-science/releases/download/${version}/neo4j-graph-data-science-${version}.zip";
+    url = "https://graphdatascience.ninja/neo4j-graph-data-science-${version}.zip";
     sha256 = "0hm6yllyn629nffmdlz3wby1df6ix19ajb2mwvl84z9jgr2crqlk";
   };
 
-  unpackPhase = ''
-    runHook preUnpack
+  meta = with lib; {
+    description =
+      "The Neo4j Graph Data Science Library";
+    homepage = "https://neo4j.com/docs/graph-data-science/current/";
+    downloadpage = "https://neo4j.com/graph-data-science-software/";
+    license = licenses.gpl3Only;
 
-    mkdir plugins
-    "${unzip}"/bin/unzip "$src" *.jar -d plugins
-
-    runHook postUnpack
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    echo $PWD
-    ls
-    mkdir -p "$out"/share/neo4j
-    mv plugins "$out"/share/neo4j
-
-    runHook postInstall
-  '';
+    maintainers = [ maintainers.offline ];
+    platforms = lib.platforms.unix;
+  };
 }
