@@ -14,20 +14,18 @@ symlinkJoin rec {
     substituteInPlace "$conf" \
      --replace '#dbms.security.auth_enabled=false' 'dbms.security.auth_enabled=false'
   '');
-  # NOTE: not convinced this will work with multiple plugins,
-  # especially the case where at least one plugin doesn't need
-  # unrestricted security in which case `unrestrictedPlugins` may have
-  # something like "gds.*,,". But I only have one working plugin at
-  # the moment so can't test yet.
-  unrestrictedPlugins = builtins.concatStringsSep ","
-    (map (p: if p.unrestricted then p.pname + ".*" else "") plugins);
-  setUnrestrictedPlugins =
-    (if (builtins.stringLength unrestrictedPlugins) > 0 then ''
-      substituteInPlace "$conf" \
-          --replace "#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*" \
-                    "dbms.security.procedures.unrestricted=${unrestrictedPlugins}"
-    '' else
-      "");
+
+  unrestrictedPlugins = builtins.filter (p: p.unrestricted) plugins;
+
+  setUnrestrictedPlugins = (if (builtins.length unrestrictedPlugins) > 0 then ''
+    substituteInPlace "$conf" \
+        --replace "#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*" \
+                  "dbms.security.procedures.unrestricted=${
+                    (builtins.concatStringsSep ","
+                      (map (p: p.pname + ".*") unrestrictedPlugins))
+                  }"
+  '' else
+    "");
 
   postBuild = ''
     rm  "$out"/bin/neo4j
