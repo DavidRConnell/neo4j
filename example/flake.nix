@@ -20,8 +20,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         # Need a way to avoid hardcoding user's home directory.
         db-home = "/home/user/.local/share/neo4j/example";
-        auth-enabled = false;
-        plugins = (with neo4j.plugins.${system}; [ graph-data-science ]);
+        auth-enabled = false; # The default so could be omitted.
+        plugins = (with neo4j.plugins.${system}; [ gds ]);
         neo4jEnv = neo4j.packages.${system}.neo4jWrapper.override {
           inherit db-home auth-enabled plugins;
         };
