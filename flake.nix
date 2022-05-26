@@ -14,11 +14,9 @@
         jre = pkgs.openjdk11_headless;
         neo4j = pkgs.callPackage ./neo4j.nix { inherit jre; };
         db-home = "/homeless-shelter";
-        auth-enabled = false;
       in {
         packages.neo4jWrapper = pkgs.callPackage ./wrapper.nix {
-          inherit neo4j jre db-home auth-enabled;
-          plugins = [ ];
+          inherit neo4j jre db-home;
         };
         defaultPackage = self.packages.${system}.neo4jWrapper;
 

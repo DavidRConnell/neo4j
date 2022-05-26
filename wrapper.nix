@@ -1,5 +1,5 @@
-{ symlinkJoin, lib, makeWrapper, which, gawk, neo4j, jre, db-home, auth-enabled
-, plugins }:
+{ symlinkJoin, lib, makeWrapper, neo4j, jre, db-home
+, auth-enabled ? false, plugins ? [ ] }:
 
 symlinkJoin rec {
   name = "${neo4j.name}-wrapper";
@@ -34,9 +34,6 @@ symlinkJoin rec {
 
     makeWrapper "$out"/share/neo4j/bin/neo4j \
     "$out"/bin/neo4j \
-    --prefix PATH : "${
-      lib.makeBinPath [ jre which gawk ]
-    }:$out/share/neo4j/bin/" \
     --set JAVA_HOME "${jre}" \
     --set NEO4J_HOME "$out"/share/neo4j
 
