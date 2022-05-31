@@ -28,12 +28,16 @@ symlinkJoin rec {
     "");
 
   postBuild = ''
-    rm  "$out"/bin/neo4j
 
-    makeWrapper "$out"/share/neo4j/bin/neo4j \
-    "$out"/bin/neo4j \
-    --set JAVA_HOME "${jre}" \
-    --set NEO4J_HOME "$out"/share/neo4j
+    for NEO4J_SCRIPT in neo4j neo4j-admin cypher-shell
+    do
+      rm  "$out"/bin/$NEO4J_SCRIPT
+
+        makeWrapper "$out"/share/neo4j/bin/$NEO4J_SCRIPT \
+            "$out"/bin/$NEO4J_SCRIPT \
+            --set JAVA_HOME "${jre}" \
+            --set NEO4J_HOME "$out"/share/neo4j
+    done
 
     conf=$out/share/neo4j/conf/neo4j.conf
     origconf=$(readlink $conf)
